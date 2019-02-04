@@ -81,8 +81,5 @@ ch_data_tsibble
  1 2019-02-04 07:08:00  Tagname1   0.212
  2 2019-02-04 07:09:00  Tagname1   0.212
  3 2019-02-04 07:10:00  Tagname1   0.212
- 4 2019-02-04 07:11:00  Tagname1   0.212
+ 4 2019-02-04 07:11:00  Tagname1   0.212 
 ```
-"adding a line" 
-"adding a line" 
-"adding a line" 

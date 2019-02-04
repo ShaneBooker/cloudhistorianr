@@ -55,15 +55,42 @@ ch_data <- getCHData(uri = data_uri,
                             down_sample = down_sample,
                             sys_guid = sys_guid)
 
+
 head(ch_data$data)
                  time    value    point_id
 1 2019-02-04 05:08:00 1031.669    Tagname1
 2 2019-02-04 05:09:00 1031.669    Tagname1
 3 2019-02-04 05:10:00 1031.669    Tagname1
 4 2019-02-04 05:11:00 1031.669    Tagname1
-
 ```
 
 Data will be returned as a data frame in the $data variable. I recommend converting this to a tsibble object. It makes visulaization and manipulation much much easier.
+
+```{r tsibble, echo=TRUE,  eval=FALSE}
+library(tidyverse)
+library(tsibble)
+
+ch_data_tsibble = ch_data$data %>%
+  as_tsibble(
+      index = time,
+      key = id(point_id),
+      regular = FALSE
+  )
+
+
+ch_data_tsibble
+# A tsibble: 8,073 x 3 [!] <UTC>
+# Key:       point_id [2]
+   time                 point_id   value
+   <dttm>               <chr>      <dbl>
+ 1 2019-02-04 07:08:00  Tagname1   0.212
+ 2 2019-02-04 07:09:00  Tagname1   0.212
+ 3 2019-02-04 07:10:00  Tagname1   0.212
+ 4 2019-02-04 07:11:00  Tagname1   0.212
+
+
+```
+
+
 
 

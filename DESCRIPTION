@@ -1,9 +1,9 @@
 Package: cloudhistorianr
 Type: Package
-Title: Tool for easily connecting to Cloud Historian and retrieve data
+Title: Tool for easily connecting to Cloud Historian and retrieving data
 Version: 0.1.0
 Author: person("Shane", "Booker", email = "Shane.Booker@honeywell.com", role = c("aut", "cre"))
-Description: Tool for easily connecting to Cloud Historian and retrieve data
+Description: Tool for easily connecting to Cloud Historian and retrieving data
     To use this tool you will need
     * AppID and Secret
     * SYSGUID of the SDX/CHC uplifting the data

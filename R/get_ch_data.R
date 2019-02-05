@@ -1,4 +1,4 @@
-#' getCHData Function:
+#' get_ch_data Function:
 #'
 #'A function to connect to Honewell Sentience Cloud Historian Server and return the requested timeseries data
 #' @param uri Cloud Historian Server Address
@@ -17,7 +17,7 @@
 #' @return An object with the request information and the formated data in the $data attribute.
 
 
-getCHData <- function(uri, token, start_time, end_time, tag_names, down_sample,sys_guid) {
+get_ch_data <- function(uri, token, start_time, end_time, tag_names, down_sample,sys_guid) {
 
   require(jsonlite)
   require(httr)
@@ -59,19 +59,24 @@ getCHData <- function(uri, token, start_time, end_time, tag_names, down_sample,s
   #REST API Call
   result <- POST(uri, add_headers(headers), body=body)
   content <- content(result)
+  http_error <- http_error(result)
+  http_status <- http_status(result)
+
+  #holding list for the returned data
   return_data <- list()
 
-  #show warning if not returning 200 status code
-  if (result$status_code != 200) {
+  #warn if an error is found
+  if (http_error) {
+    warning(paste("Rest API call failed to retrieve data from Honeywell Sentience Cloud Historian. \nReturned status code:",result$status_code,"\nError:",content$error,"\nMessage:",content$message))
+    return_data$error <- content
+
+    #400 errors are often due to incorect tag and time data
     if (result$status_code == 404){
-      warning(paste("Rest API call failed to retrieve data from Honeywell Sentience Cloud Historian. \nReturned status code:",result$status_code,"\nError: Check that the following are all correct: URL, TimeStamp, Tagname(s)."))
-      return_data$error <- content
-    }else{
-      warning(paste("Rest API call failed to retrieve data from Honeywell Sentience Cloud Historian. \nReturned status code:",result$status_code,"\nError:",content$error,"\nMessage:",content$message))
-      return_data$error <- content
+      warning(paste("Status code:",result$status_code,". Check that the URL is correct"))
+    }else if (result$status_code == 400){
+      warning(paste("Status code:",result$status_code,". Check that the tagname(s), timestamps and downsample are valid"))
     }
-  }
-  else{
+  }else{
     # Convert to a data matrix
     point_id <- c()
     value <- c()

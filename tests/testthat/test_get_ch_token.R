@@ -6,7 +6,7 @@ test_that("token is returned", {
   resource <- 'http://sentgeprodreguiweb.azurewebsites.net'
   client_id <- '298e41fd-251c-4bb2-a22e-41f6b61261ce'
   client_secret <- 'macfI2HUFIonc386wJmImTKaKhscuhUc873Pxl4j26c='
-  token <- getCHToken(uri = token_uri,
+  token <- get_ch_token(uri = token_uri,
     resource = resource,
     client_id = client_id,
     client_secret = client_secret)
@@ -23,10 +23,12 @@ test_that("token is NOT returned - bad Secret", {
   resource <- 'http://sentgeprodreguiweb.azurewebsites.net'
   client_id <- '298e41fd-251c-4bb2-a22e-41f6b61261ce'
   client_secret <- 'macfI2HUFIonc386wJmImTKaKhscuhUc873Pxl4j26c=XX'
-  token <- getCHToken(uri = token_uri,
-    resource = resource,
-    client_id = client_id,
-    client_secret = client_secret)
+  expect_warning(
+    token <- get_ch_token(uri = token_uri,
+      resource = resource,
+      client_id = client_id,
+      client_secret = client_secret)
+  )
 
   expect_equal(token$status_code, 401)
   expect_equal(token$error, "invalid_client")
@@ -38,10 +40,12 @@ test_that("token is NOT returned - bad client id", {
   resource <- 'http://sentgeprodreguiweb.azurewebsites.net'
   client_id <- '298e41fd-251c-4bb2-a22e-41f6b61261'
   client_secret <- 'macfI2HUFIonc386wJmImTKaKhscuhUc873Pxl4j26c='
-  token <- getCHToken(uri = token_uri,
-    resource = resource,
-    client_id = client_id,
-    client_secret = client_secret)
+  expect_warning(
+    token <- get_ch_token(uri = token_uri,
+      resource = resource,
+      client_id = client_id,
+      client_secret = client_secret)
+  )
 
   expect_equal(token$status_code, 400)
   expect_equal(token$error, "unauthorized_client")
@@ -52,10 +56,12 @@ test_that("token is NOT returned - bad resource", {
   resource <- 'http://sentgeprodreguiweb.azurewebsites.netaa'
   client_id <- '298e41fd-251c-4bb2-a22e-41f6b61261ce'
   client_secret <- 'macfI2HUFIonc386wJmImTKaKhscuhUc873Pxl4j26c='
-  token <- getCHToken(uri = token_uri,
-    resource = resource,
-    client_id = client_id,
-    client_secret = client_secret)
+  expect_warning(
+    token <- get_ch_token(uri = token_uri,
+      resource = resource,
+      client_id = client_id,
+      client_secret = client_secret)
+    )
 
   expect_equal(token$status_code, 400)
   expect_equal(token$error, "invalid_resource")
@@ -66,12 +72,11 @@ test_that("token is NOT returned - bad url", {
   resource <- 'http://sentgeprodreguiweb.azurewebsites.net'
   client_id <- '298e41fd-251c-4bb2-a22e-41f6b61261ce'
   client_secret <- 'macfI2HUFIonc386wJmImTKaKhscuhUc873Pxl4j26c='
-  token <- getCHToken(uri = token_uri,
+
+  expect_error(token <- get_ch_token(uri = token_uri,
     resource = resource,
     client_id = client_id,
-    client_secret = client_secret)
-
-  expect_equal(token$status_code, 404)
+    client_secret = client_secret))
 
 })
 

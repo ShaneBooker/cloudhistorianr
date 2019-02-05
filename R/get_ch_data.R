@@ -83,8 +83,9 @@ get_ch_data <- function(uri, token, start_time, end_time, tag_names, down_sample
     if(length(content) == 0 ){
       warning(paste("No data was returned. Search criteria:\nStart time:",start_time,
         "\nEnd time:",end_time,
-        "\nTag names:",paste(tag_names,collapse=", "),
-        "\nDown sampling:",down_sample))
+        "\nDown sampling:",down_sample,
+        "\nTag names:",paste(tag_names,collapse=", ")
+        ))
 
     }else{
       # Convert to a data matrix

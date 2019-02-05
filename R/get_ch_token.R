@@ -3,9 +3,9 @@
 #'A function to connect to an oauth2 server and return a security token
 #' @param uri Oauth2 server address
 #' @param resource Oauth2 server resource name
-#' @param client_id is the Cloud Historian AppID
-#' @param client_secret is the Cloud Historian AppID Secret
-#' @return a security token
+#' @param client_id Cloud Historian AppID
+#' @param client_secret Cloud Historian AppID Secret
+#' @return Security token
 
 get_ch_token <- function(uri, resource, client_id, client_secret) {
     require(httr)

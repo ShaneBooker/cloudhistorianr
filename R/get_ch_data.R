@@ -76,26 +76,48 @@ get_ch_data <- function(uri, token, start_time, end_time, tag_names, down_sample
     }else if (result$status_code == 400){
       warning(paste("Status code:",result$status_code,". Check that the tagname(s), timestamps and downsample are valid"))
     }
-  }else{
-    # Convert to a data matrix
-    point_id <- c()
-    value <- c()
-    sample_time <- c()
-    for (j in seq_along(content)) {
-      x <- content[[j]]$pointValues
-      y <- content[[j]]$pointId
-      for (i in seq_along(x)) {
-        point_id <- c(point_id, y)
-        value <- c(value, as.numeric(x[[i]]))
-        sample_time <- c(sample_time, as.integer(names(x[i])))
+
+  }else{ #http success
+
+    #check that content of the request includes data
+    if(length(content) == 0 ){
+      warning(paste("No data was returned. Search criteria:\nStart time:",start_time,
+        "\nEnd time:",end_time,
+        "\nTag names:",paste(tag_names,collapse=", "),
+        "\nDown sampling:",down_sample))
+
+    }else{
+      # Convert to a data matrix
+      point_id <- c()
+      value <- c()
+      sample_time <- c()
+
+      #data is returned grouped by pointid. This will break up that grouping and create 3 vectors: pointid, pointvalue and timestamp
+      for (j in seq_along(content)) {
+        temp_point_values <- content[[j]]$pointValues
+        temp_point_id <- content[[j]]$pointId
+
+        if(length(temp_point_values) > 0){
+          for (i in seq_along(temp_point_values)) {
+            #create the 3 holding vectors
+            point_id <- c(point_id, temp_point_id)
+            value <- c(value, as.numeric(temp_point_values[[i]]))
+            sample_time <- c(sample_time, as.integer(names(temp_point_values[i])))
+          }
+        }else{
+          warning(paste("no data values found for tag",temp_point_id))
+        }
+      }
+
+      if(length(point_id)>0){
+        #repackage the 3 vectors as a data frame
+        return_data$data <- data.frame(
+            time = as_datetime(sample_time),
+            value = value,
+            point_id = point_id
+          )
       }
     }
-
-    return_data$data <- data.frame(
-      time = as_datetime(sample_time),
-      value = value,
-      point_id = point_id
-    )
 
   }
 

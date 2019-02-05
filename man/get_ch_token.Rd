@@ -11,12 +11,12 @@ get_ch_token(uri, resource, client_id, client_secret)
 
 \item{resource}{Oauth2 server resource name}
 
-\item{client_id}{is the Cloud Historian AppID}
+\item{client_id}{Cloud Historian AppID}
 
-\item{client_secret}{is the Cloud Historian AppID Secret}
+\item{client_secret}{Cloud Historian AppID Secret}
 }
 \value{
-a security token
+Security token
 }
 \description{
 A function to connect to an oauth2 server and return a security token

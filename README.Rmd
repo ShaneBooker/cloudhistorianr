@@ -20,6 +20,8 @@ To use this tool you will need the following information:
 ```{r, eval = FALSE}
 # The development version from GitHub:
 devtools::install_github("shanebooker/cloudhistorianr")
+
+library(cloudhistorianr)
 ```
 
 ## Usage 

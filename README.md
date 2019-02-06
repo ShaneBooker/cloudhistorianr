@@ -14,6 +14,8 @@ Installation
 ``` r
 # The development version from GitHub:
 devtools::install_github("shanebooker/cloudhistorianr")
+
+library(cloudhistorianr)
 ```
 
 Usage

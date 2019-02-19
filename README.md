@@ -61,11 +61,12 @@ head(ch_data$data)
 4 2019-02-04 05:11:00 1031.669    Tagname1
 ```
 
-Data will be returned as a data frame in the $data variable. I recommend converting this to a tsibble object. It makes visulaization and manipulation much much easier.
+Data will be returned as a data frame in the $data variable. I recommend converting this to a tsibble object. It makes visualization and manipulation much much easier.
 
 ``` r
 library(tidyverse)
 library(tsibble)
+library(dygraph)
 
 ch_data_tsibble = ch_data$data %>%
   as_tsibble(
@@ -75,7 +76,7 @@ ch_data_tsibble = ch_data$data %>%
   )
 
 
-ch_data_tsibble
+head(ch_data_tsibble)
 # A tsibble: 8,073 x 3 [!] <UTC>
 # Key:       point_id [2]
    time                 point_id   value
@@ -84,4 +85,17 @@ ch_data_tsibble
  2 2019-02-04 07:09:00  Tagname1   0.212
  3 2019-02-04 07:10:00  Tagname1   0.212
  4 2019-02-04 07:11:00  Tagname1   0.212 
+
+#Create XTS object
+ch_data_tsibble_xts <- ts_xts(ch_data_tsibble)
+ 
+#Graph the data using dygraph
+dygraph(ch_data_tsibble_xts,  main = 'Raw Data') %>% 
+      dyRangeSelector() %>%
+      dyHighlight(highlightCircleSize = 5, 
+                highlightSeriesBackgroundAlpha = 0.2,
+                hideOnMouseOut = TRUE) %>%
+      dyOptions(useDataTimezone  = TRUE)%>% 
+      dyRoller(rollPeriod = 1)%>%
+      dyLegend(show = "follow") 
 ```

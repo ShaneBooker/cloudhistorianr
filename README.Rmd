@@ -36,7 +36,7 @@ token_uri <- 'https://login.windows.net/805ba517-8a74-4377-81c1-6af998bc4709/oau
 resource <- '<resource>'
 client_id <- '<Client Id>'
 client_secret <- '<secret>'
-token <- getCHToken(uri = token_uri, 
+token <- get_ch_token(uri = token_uri, 
                     resource = resource, 
                     client_id = client_id, 
                     client_secret = client_secret)
@@ -49,7 +49,7 @@ start_time <- "2019-02-03T09:00:00.000+09:00"
 end_time <- "2019-02-03T11:00:00.000+09:00"
 
 #Raw data
-ch_data <- getCHData(uri = data_uri, 
+ch_data <- get_ch_data(uri = data_uri, 
                             token = token$access_token, 
                             start_time = start_time, 
                             end_time = end_time, 

@@ -39,7 +39,14 @@ token <- get_ch_token(uri = token_uri,
 data_uri <- 'https://sentt01eprod.sentienceanalytics.com/api/timeseries/values/summary'
 sys_guid <- '<GUID>'
 tag_names <- c("Tagname1","Tagname2") #vector list of tagnames 
-down_sample <- "1m-avg" #see help for other downsamples
+down_sample <- "1m-avg" 
+#'    Example responses for 'down_sample':
+#'    Downsample to 1 min average: "1m-avg",
+#'    Downsample to 60 second average: "60s-avg",
+#'    Downsample to 1 hour average: "1h-avg",
+#'    Downsample to avg of all results: "0all-avg",
+#'    Downsample to max of all results: "0all-max",
+#'    return raw data: ""
 start_time <- "2019-02-03T09:00:00.000+09:00" 
 end_time <- "2019-02-03T11:00:00.000+09:00"
 

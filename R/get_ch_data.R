@@ -103,7 +103,7 @@ get_ch_data <- function(uri, token, start_time, end_time, tag_names, down_sample
             #create the 3 holding vectors
             point_id <- c(point_id, temp_point_id)
             value <- c(value, as.numeric(temp_point_values[[i]]))
-            sample_time <- c(sample_time, as.integer(names(temp_point_values[i])))
+            sample_time <- c(sample_time, as.integer(names(temp_point_values[i])/1000000)) #2019-12-2 API now responds in nano time, this is to take the result back to mili-seconds
           }
         }else{
           warning(paste("no data values found for tag",temp_point_id))
@@ -113,7 +113,7 @@ get_ch_data <- function(uri, token, start_time, end_time, tag_names, down_sample
       if(length(point_id)>0){
         #repackage the 3 vectors as a data frame
         return_data$data <- data.frame(
-            time = as_datetime(sample_time/1000000), #2019-12-2 API now responds in nano time, this is to take the result back to mili-seconds
+            time = as_datetime(sample_time),
             value = value,
             point_id = point_id
           )

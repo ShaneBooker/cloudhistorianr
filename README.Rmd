@@ -83,7 +83,7 @@ library(dygraph)
 ch_data_tsibble = ch_data$data %>%
   as_tsibble(
       index = time,
-      key = id(point_id),
+      key = point_id,
       regular = FALSE
   )
 
@@ -110,6 +110,8 @@ dygraph(ch_data_tsibble_xts,  main = 'Raw Data') %>%
       dyOptions(useDataTimezone  = TRUE)%>% 
       dyRoller(rollPeriod = 1)%>%
       dyLegend(show = "follow") 
+
+
 
 ```
 

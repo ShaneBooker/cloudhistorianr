@@ -7,6 +7,7 @@
 #' @param end_time The start time to be used for data retrieval
 #' @param tag_names A vector of tagnems to be used for data retrieval
 #' @param down_sample The the downsampling function to be used in the data retrieval
+#' @param aggregator sepecify the aggregation method to use
 #'    Valid responses:
 #'    Downsample to 1 min average: "1m-avg",
 #'    Downsample to 60 second average: "60s-avg",
@@ -14,10 +15,14 @@
 #'    Downsample to avg of all results: "0all-avg",
 #'    Downsample to max of all results: "0all-max",
 #'    return raw data: ""
+#'@param sys_guid This is the sys guid of the SDX sending data to Cloud Historian
 #' @return An object with the request information and the formated data in the $data attribute.
 
 
-get_ch_data <- function(uri, token, start_time, end_time, tag_names, down_sample,sys_guid) {
+get_ch_data <- function(uri, token, start_time, end_time, tag_names, down_sample = "",sys_guid, aggregator = "") {
+
+  #display highest resolution time stamp
+  options(digits.secs=6)
 
   require(jsonlite)
   require(httr)
@@ -36,8 +41,9 @@ get_ch_data <- function(uri, token, start_time, end_time, tag_names, down_sample
       request_tags,
       paste('{"pointId":  "',tolower(tag_names[i]),
             '","systemGuid": "',sys_guid,'",
-            "aggregator": "none","downsample": "', down_sample,
-            '","pointAttributes": { "Quality": "Good" }}',
+            "aggregator": "',aggregator,'",
+            "downsample": "', down_sample,
+            '","pointAttributes": {}}',
             sep = ""),
       sep = "")
 
@@ -75,6 +81,8 @@ get_ch_data <- function(uri, token, start_time, end_time, tag_names, down_sample
       warning(paste("Status code:",result$status_code,". Check that the URL is correct"))
     }else if (result$status_code == 400){
       warning(paste("Status code:",result$status_code,". Check that the tagname(s), timestamps and downsample are valid"))
+    }else if (result$status_code == 500){
+      warning(paste("Status code:",result$status_code,". Check the downsampling and aggregator parameters are valid"))
     }
 
   }else{ #http success
@@ -103,7 +111,7 @@ get_ch_data <- function(uri, token, start_time, end_time, tag_names, down_sample
             #create the 3 holding vectors
             point_id <- c(point_id, temp_point_id)
             value <- c(value, as.numeric(temp_point_values[[i]]))
-            sample_time <- c(sample_time, as.integer(names(temp_point_values[i])/1000000)) #2019-12-2 API now responds in nano time, this is to take the result back to mili-seconds
+            sample_time <- c(sample_time, (as.numeric(names(temp_point_values[i]))/1000000000)) #2019-12-2 API now responds in nano time, this is to take the result back to seconds
           }
         }else{
           warning(paste("no data values found for tag",temp_point_id))
@@ -114,6 +122,7 @@ get_ch_data <- function(uri, token, start_time, end_time, tag_names, down_sample
         #repackage the 3 vectors as a data frame
         return_data$data <- data.frame(
             time = as_datetime(sample_time),
+            #time = format(as_datetime(sample_time),format = '%Y-%m-%d %H:%M:%OS %Z'),
             value = value,
             point_id = point_id
           )
@@ -122,7 +131,7 @@ get_ch_data <- function(uri, token, start_time, end_time, tag_names, down_sample
 
   }
 
-
+  #return_data$content <- content
   return_data$url <- result$url
   return_data$status_code <- result$status_code
   return(return_data)
